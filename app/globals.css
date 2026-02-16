@@ -1,0 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0a0a0c;
+  color: #e8e6e1;
+  font-family: 'EB Garamond', Georgia, serif;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
