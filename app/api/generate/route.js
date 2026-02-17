@@ -1,3 +1,5 @@
+import { kv } from '@vercel/kv';
+
 export async function POST(request) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
 
@@ -24,6 +26,17 @@ export async function POST(request) {
     });
 
     const data = await response.json();
+
+    if (data.content && !data.error) {
+      try {
+        await kv.incr('letters_generated');
+        if (body.site) await kv.incr(`site:${body.site}`);
+        if (body.target) await kv.incr(`target:${body.target}`);
+      } catch (kvErr) {
+        console.error('KV counter error:', kvErr);
+      }
+    }
+
     return Response.json(data);
   } catch (err) {
     return Response.json({ error: { message: err.message } }, { status: 500 });
