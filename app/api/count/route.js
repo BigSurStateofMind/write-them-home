@@ -1,42 +1,25 @@
-function getKvConfig() {
-  const kvUrl =
-    process.env.KV_REST_API_URL ||
-    process.env.KV_REST_API_REDIS_URL ||
-    process.env.KV_REST_API_REST_URL;
-  const kvToken =
-    process.env.KV_REST_API_TOKEN ||
-    process.env.KV_REST_API_REDIS_TOKEN ||
-    process.env.KV_REST_API_REST_TOKEN;
-
-  if (!kvUrl || !kvToken) return null;
-  return { kvUrl, kvToken };
-}
+const COUNTAPI_BASE = 'https://api.countapi.xyz';
+const COUNTAPI_NAMESPACE = 'writethem-samstern-life';
+const COUNTAPI_KEY = 'letters_generated';
 
 async function getCount() {
-  const config = getKvConfig();
-  if (!config) return 0;
-
   try {
-    const res = await fetch(`${config.kvUrl}/get/letters_generated`, {
-      headers: { Authorization: `Bearer ${config.kvToken}` },
-    });
+    const res = await fetch(
+      `${COUNTAPI_BASE}/get/${COUNTAPI_NAMESPACE}/${COUNTAPI_KEY}`,
+    );
+    if (!res.ok) return 0;
     const data = await res.json();
-    return parseInt(data.result, 10) || 0;
+    return parseInt(data.value, 10) || 0;
   } catch (err) {
     return 0;
   }
 }
 
 async function incrementCount() {
-  const config = getKvConfig();
-  if (!config) return;
-
   try {
-    await fetch(`${config.kvUrl}/incr/letters_generated`, {
-      headers: { Authorization: `Bearer ${config.kvToken}` },
-    });
+    await fetch(`${COUNTAPI_BASE}/hit/${COUNTAPI_NAMESPACE}/${COUNTAPI_KEY}`);
   } catch (err) {
-    // Best-effort only; ignore KV failures.
+    // Best-effort only; ignore counter failures.
   }
 }
 
