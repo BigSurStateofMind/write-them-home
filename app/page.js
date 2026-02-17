@@ -132,12 +132,12 @@ const SITES = [
   {
     id: "hutchins",
     name: "Hutchins, TX",
-    status: "active",
-    statusLabel: "LARGEST PROPOSED",
+    status: "victory",
+    statusLabel: "VICTORY — BLOCKED",
     capacity: "9,500 beds",
     type: "Mega Center",
-    summary: "A vacant one-million-square-foot warehouse at the intersection of I-45 and I-20. ICE wants to turn it into a 9,500-bed mega center — in a town with a population of roughly 8,000. The facility would hold more detainees than the town has residents. The mayor opposes it. The infrastructure is completely inadequate. This is the single largest proposed facility in ICE's entire national expansion program.",
-    keyFact: "9,500 detainees in a town of 8,000. The math alone is the argument.",
+    summary: "Majestic Realty announced it will not enter any agreements to sell or lease buildings to DHS for use as a detention facility. The City Council thanked residents for their patience and professional decorum during council meetings and protests. This was the single largest proposed facility in ICE's national expansion — 9,500 beds in a town of 8,000 — and community opposition killed it.",
+    keyFact: "BLOCKED. Majestic Realty refused to sell. Community opposition defeated the largest proposed facility in ICE's entire expansion.",
     targets: [
       { name: "Mario Vasquez", title: "Mayor", email: "colguin@cityofhutchins.org", type: "local", ask: "Pass moratorium. Deny permits. Use every available local tool." },
       { name: "Steve Nichols", title: "Mayor Pro Tem", email: "colguin@cityofhutchins.org", type: "local", ask: "Vote for binding moratorium." },
@@ -152,7 +152,7 @@ const UNIVERSAL_FACTS = [
   "Acting ICE Director Todd Lyons described the system he wants to build as 'like Amazon Prime, but with human beings.'",
   "David Venturella, the ICE advisor overseeing site selection, is a former GEO Group executive. GEO Group is simultaneously receiving sole-source contracts to run facilities he selects.",
   "DHS economic impact analyses were copy-pasted across sites — the Merrimack, NH document referenced Oklahoma, cited income tax in a state that has none.",
-  "6 of 23 proposed sites have already been blocked by local opposition — with almost no organized national infrastructure.",
+  "7 of 23 proposed sites have already been blocked by local opposition — including the largest proposed facility in the entire program.",
   "Sen. Roger Wicker (R-MS) wrote one letter to DHS Secretary Noem citing infrastructure concerns. She agreed to abandon the Byhalia site within 3 days.",
   "Over 3,800 children have been booked into ICE custody since January 2025, including 20 infants. 1,300+ held longer than the Flores Settlement allows.",
 ];
@@ -266,6 +266,15 @@ function StepHeader({ step, total, title, onBack }) {
 }
 
 function Landing({ onStart }) {
+  const [letterCount, setLetterCount] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/count')
+      .then(r => r.json())
+      .then(d => setLetterCount(d.count))
+      .catch(() => setLetterCount(null));
+  }, []);
+
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: 32, textAlign: "center", position: "relative", overflow: "hidden" }}>
       <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 50% 30%, ${palette.accentGlow} 0%, transparent 60%)`, pointerEvents: "none" }} />
@@ -280,7 +289,13 @@ function Landing({ onStart }) {
         <button onClick={onStart} style={{ background: palette.accent, color: "#fff", border: "none", padding: "14px 40px", fontSize: 15, fontFamily: "'DM Sans', sans-serif", fontWeight: 600, borderRadius: 4, cursor: "pointer", letterSpacing: "0.04em", transition: "all 0.2s" }}>
           Start Writing
         </button>
-        <div style={{ marginTop: 48, fontSize: 12, color: palette.textDim, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6, maxWidth: 420, marginLeft: "auto", marginRight: "auto" }}>
+        {letterCount > 0 && (
+          <div style={{ marginTop: 36, padding: "16px 24px", background: palette.surface, border: `1px solid ${palette.border}`, borderRadius: 6, display: "inline-block" }}>
+            <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: palette.textDim, marginBottom: 6 }}>Letters generated so far</div>
+            <div style={{ fontFamily: "'EB Garamond', serif", fontSize: 42, fontWeight: 600, color: palette.accent, lineHeight: 1 }}>{letterCount.toLocaleString()}</div>
+          </div>
+        )}
+        <div style={{ marginTop: letterCount > 0 ? 24 : 48, fontSize: 12, color: palette.textDim, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6, maxWidth: 420, marginLeft: "auto", marginRight: "auto" }}>
           You write. AI sharpens your voice into personalized letters for every target.
         </div>
       </div>
@@ -294,7 +309,7 @@ function PickFight({ sites, onSelect, onBack }) {
       <StepHeader step={1} total={5} title="Pick Your Fight" onBack={onBack} />
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "0 24px" }}>
         <p style={{ fontSize: 15, color: palette.textMuted, marginBottom: 24, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
-          ICE is building a national network of mega-detention warehouses — facilities holding thousands of people each, in communities that were never consulted. Six sites have already been blocked by local opposition. These are the key fights.
+          ICE is building a national network of mega-detention warehouses — facilities holding thousands of people each, in communities that were never consulted. Seven sites have already been blocked by local opposition. These are the key fights.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {sites.map((s) => (
@@ -305,8 +320,8 @@ function PickFight({ sites, onSelect, onBack }) {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
                 <div style={{ fontFamily: "'EB Garamond', serif", fontSize: 19, fontWeight: 600 }}>{s.name}</div>
                 <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase",
-                  color: s.status === "sold" ? palette.warm : palette.accent,
-                  background: s.status === "sold" ? palette.warmDim : palette.accentGlow,
+                  color: s.status === "victory" ? palette.success : s.status === "sold" ? palette.warm : palette.accent,
+                  background: s.status === "victory" ? palette.successDim : s.status === "sold" ? palette.warmDim : palette.accentGlow,
                   padding: "3px 8px", borderRadius: 3, whiteSpace: "nowrap"
                 }}>{s.statusLabel}</span>
               </div>
@@ -509,6 +524,8 @@ Write the letter now. Direct, specific, personal. End with a concrete demand.`;
       const data = await response.json();
       const text = data.content?.map((b) => b.text || "").join("\n") || "Error generating letter. Please try again.";
       setLetters((prev) => ({ ...prev, [idx]: text }));
+      // Increment the counter
+      try { fetch("/api/count", { method: "POST" }); } catch(e) {}
     } catch (err) {
       setLetters((prev) => ({ ...prev, [idx]: "Error connecting to AI. Please try again." }));
     }
