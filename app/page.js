@@ -266,38 +266,6 @@ function StepHeader({ step, total, title, onBack }) {
 }
 
 function Landing({ onStart }) {
-  const [letterCount, setLetterCount] = useState(null);
-  const [displayCount, setDisplayCount] = useState(0);
-  const GOAL = 1000;
-
-  useEffect(() => {
-    fetch('/api/count')
-      .then(r => r.json())
-      .then(d => setLetterCount(d.count || 0))
-      .catch(() => setLetterCount(0));
-  }, []);
-
-  // Animated count-up
-  useEffect(() => {
-    if (letterCount === null || letterCount === 0) return;
-    const duration = 1500;
-    const steps = 40;
-    const increment = letterCount / steps;
-    let current = 0;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= letterCount) {
-        setDisplayCount(letterCount);
-        clearInterval(timer);
-      } else {
-        setDisplayCount(Math.floor(current));
-      }
-    }, duration / steps);
-    return () => clearInterval(timer);
-  }, [letterCount]);
-
-  const pct = letterCount ? Math.min((letterCount / GOAL) * 100, 100) : 0;
-
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", padding: 32, textAlign: "center", position: "relative", overflow: "hidden" }}>
       <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 50% 30%, ${palette.accentGlow} 0%, transparent 60%)`, pointerEvents: "none" }} />
@@ -312,34 +280,6 @@ function Landing({ onStart }) {
         <button onClick={onStart} style={{ background: palette.accent, color: "#fff", border: "none", padding: "14px 40px", fontSize: 15, fontFamily: "'DM Sans', sans-serif", fontWeight: 600, borderRadius: 4, cursor: "pointer", letterSpacing: "0.04em", transition: "all 0.2s" }}>
           Start Writing
         </button>
-        {letterCount !== null && (
-          <div style={{ marginTop: 36, padding: "20px 24px", background: palette.surface, border: `1px solid ${palette.border}`, borderRadius: 8, maxWidth: 420, marginLeft: "auto", marginRight: "auto", textAlign: "left" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
-              <div>
-                <span style={{ fontFamily: "'EB Garamond', serif", fontSize: 36, fontWeight: 600, color: palette.accent, lineHeight: 1 }}>{displayCount.toLocaleString()}</span>
-                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: palette.textMuted, marginLeft: 8 }}>letters generated</span>
-              </div>
-              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: palette.textDim }}>
-                Goal: {GOAL.toLocaleString()}
-              </div>
-            </div>
-            <div style={{ width: "100%", height: 8, background: palette.bg, borderRadius: 4, overflow: "hidden", position: "relative" }}>
-              <div style={{
-                width: `${pct}%`,
-                height: "100%",
-                background: `linear-gradient(90deg, ${palette.accent}, ${palette.accentSoft})`,
-                borderRadius: 4,
-                transition: "width 1.5s ease-out",
-                boxShadow: pct > 0 ? `0 0 8px ${palette.accentGlow}` : "none",
-              }} />
-            </div>
-            {letterCount === 0 && (
-              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: palette.textDim, marginTop: 8, textAlign: "center", fontStyle: "italic" }}>
-                Be the first.
-              </div>
-            )}
-          </div>
-        )}
         <div style={{ marginTop: 24, fontSize: 12, color: palette.textDim, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6, maxWidth: 420, marginLeft: "auto", marginRight: "auto" }}>
           You write. AI sharpens your voice into personalized letters for every target.
         </div>
@@ -569,8 +509,6 @@ Write the letter now. Direct, specific, personal. End with a concrete demand.`;
       const data = await response.json();
       const text = data.content?.map((b) => b.text || "").join("\n") || "Error generating letter. Please try again.";
       setLetters((prev) => ({ ...prev, [idx]: text }));
-      // Increment the counter
-      try { fetch("/api/count", { method: "POST" }); } catch(e) {}
     } catch (err) {
       setLetters((prev) => ({ ...prev, [idx]: "Error connecting to AI. Please try again." }));
     }
