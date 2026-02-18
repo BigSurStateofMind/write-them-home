@@ -284,7 +284,7 @@ function Landing({ onStart }) {
           An AI-assisted letter-writing campaign to stop ICE from building warehouse detention facilities — where children and families are held indefinitely — in American communities.
         </h1>
         <p style={{ fontSize: 17, color: palette.textMuted, lineHeight: 1.6, margin: "0 0 40px", maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>
-          One writing session. Dozens of personalized letters.
+          One writing session. Dozens of personalized letters. 90% of congressional staffers say personalized letters are among the most effective ways to influence an undecided Member of Congress.
         </p>
         <button onClick={onStart} style={{ background: palette.accent, color: "#fff", border: "none", padding: "14px 40px", fontSize: 15, fontFamily: "'DM Sans', sans-serif", fontWeight: 600, borderRadius: 4, cursor: "pointer", letterSpacing: "0.04em", transition: "all 0.2s" }}>
           Start Writing
