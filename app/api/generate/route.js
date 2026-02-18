@@ -21,7 +21,7 @@ export async function POST(request) {
     });
     const data = await response.json();
 
-    if (data.content && !data.error) {
+    if (response.ok && !data.error) {
       try {
         const base = 'https://api.countapi.xyz';
         const ns = 'writethem-samstern-life';
