@@ -275,7 +275,7 @@ function Landing({ onStart }) {
           An AI-assisted letter-writing campaign to stop ICE from building warehouse detention facilities — where children and families are held indefinitely — in American communities.
         </h1>
         <p style={{ fontSize: 15, color: palette.textMuted, lineHeight: 1.7, margin: "0 0 32px", maxWidth: 500, marginLeft: "auto", marginRight: "auto" }}>
-          90% of congressional staffers say personalized letters are among the most effective ways to influence an undecided Member of Congress. In Byhalia, Mississippi, one senator wrote one letter — and the proposed ICE facility was abandoned within three days.
+          90% of congressional staffers say personalized letters are among the most effective ways to influence an undecided Member of Congress.
         </p>
         <button onClick={onStart} style={{ background: palette.accent, color: "#fff", border: "none", padding: "14px 40px", fontSize: 15, fontFamily: "'DM Sans', sans-serif", fontWeight: 600, borderRadius: 4, cursor: "pointer", letterSpacing: "0.04em", transition: "all 0.2s" }}>
           Start Writing
